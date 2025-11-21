@@ -1,0 +1,4 @@
+com\fitlife\ml\MLService$PredictionResult.class
+com\fitlife\ml\ActivityClassifier.class
+com\fitlife\ml\MLService.class
+com\fitlife\ml\MLServer.class

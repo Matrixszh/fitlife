@@ -99,7 +99,7 @@ public class ActivityClassifier {
         }
         
         // Create a new instance with the same structure as training data
-        weka.core.Instance instance = new weka.core.Instance(trainingData.numAttributes());
+        weka.core.Instance instance = new weka.core.DenseInstance(trainingData.numAttributes());
         instance.setDataset(trainingData);
         
         // Set attribute values (assuming order: duration, distance, calories, activityType)

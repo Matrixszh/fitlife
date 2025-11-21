@@ -79,7 +79,7 @@ public class MLService {
         }
         
         // Create instance
-        weka.core.Instance instance = new weka.core.Instance(dataStructure.numAttributes());
+        weka.core.Instance instance = new weka.core.DenseInstance(dataStructure.numAttributes());
         instance.setDataset(dataStructure);
         
         instance.setValue(0, duration);
@@ -102,7 +102,7 @@ public class MLService {
             throw new IllegalStateException("ML Service not initialized");
         }
         
-        weka.core.Instance instance = new weka.core.Instance(dataStructure.numAttributes());
+        weka.core.Instance instance = new weka.core.DenseInstance(dataStructure.numAttributes());
         instance.setDataset(dataStructure);
         
         instance.setValue(0, duration);

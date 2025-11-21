@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { WorkoutFormData, ActivityType, Workout } from '../../types';
-import { predictActivityType } from '../../services/mlService';
 import './Workout.css';
 
 interface WorkoutFormProps {
@@ -22,8 +21,6 @@ export default function WorkoutForm({ workout, onSubmit, onCancel }: WorkoutForm
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [mlPrediction, setMlPrediction] = useState<string | null>(null);
-  const [showMlPrediction, setShowMlPrediction] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -60,45 +57,11 @@ export default function WorkoutForm({ workout, onSubmit, onCancel }: WorkoutForm
     }
   };
 
-  const handlePredictActivity = async () => {
-    try {
-      const prediction = await predictActivityType({
-        duration: formData.duration,
-        distance: formData.distance,
-        calories: formData.calories,
-      });
-      setMlPrediction(prediction.predictedActivity);
-      setShowMlPrediction(true);
-    } catch (error) {
-      console.error('Failed to predict activity:', error);
-    }
-  };
-
-  const applyPrediction = () => {
-    if (mlPrediction) {
-      setFormData({ ...formData, activityType: mlPrediction as ActivityType });
-      setShowMlPrediction(false);
-    }
-  };
 
   return (
     <div className="workout-form-container">
       <div className="workout-form-card">
         <h2>{workout ? 'Edit Workout' : 'Add New Workout'}</h2>
-        
-        {showMlPrediction && mlPrediction && (
-          <div className="ml-prediction-banner">
-            <span>🤖 ML Prediction: {mlPrediction}</span>
-            <div>
-              <button onClick={applyPrediction} className="btn-small btn-primary">
-                Use Prediction
-              </button>
-              <button onClick={() => setShowMlPrediction(false)} className="btn-small btn-secondary">
-                Dismiss
-              </button>
-            </div>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -114,14 +77,6 @@ export default function WorkoutForm({ workout, onSubmit, onCancel }: WorkoutForm
               <option value="Walking">Walking</option>
               <option value="Gym Workout">Gym Workout</option>
             </select>
-            <button
-              type="button"
-              onClick={handlePredictActivity}
-              className="btn-predict"
-              disabled={!formData.duration || !formData.calories}
-            >
-              🤖 Predict Activity
-            </button>
           </div>
 
           <div className="form-group">

@@ -33,6 +33,9 @@ export default function Navbar() {
             <Link to="/workouts" className="nav-link">
               Workouts
             </Link>
+            <Link to="/prediction" className="nav-link">
+              🤖 Predict
+            </Link>
             <Link to="/profile" className="nav-link">
               Profile
             </Link>

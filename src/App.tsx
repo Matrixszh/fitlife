@@ -7,6 +7,7 @@ import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
 import Workouts from './pages/Workouts';
 import Profile from './components/Profile/Profile';
+import Prediction from './pages/Prediction';
 import './App.css';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -73,6 +74,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/prediction"
+              element={
+                <PrivateRoute>
+                  <Prediction />
                 </PrivateRoute>
               }
             />

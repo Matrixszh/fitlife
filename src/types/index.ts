@@ -2,6 +2,8 @@ export interface User {
   uid: string;
   email: string;
   displayName?: string;
+  weight?: number; // in kg
+  height?: number; // in cm
   createdAt: Date;
 }
 

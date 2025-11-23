@@ -13,7 +13,7 @@ export interface MLPredictionResponse {
 }
 
 // ML Service endpoint - update this to match your Java server URL
-const ML_API_URL = import.meta.env.VITE_ML_API_URL || 'http://localhost:8080/api/predict';
+const ML_API_URL = 'http://localhost:8080/api/predict';
 
 /**
  * Predict activity type using the ML model

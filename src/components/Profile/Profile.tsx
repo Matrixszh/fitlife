@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { auth } from '../../config/firebase';
-import { getUserProfile } from '../../services/authService';
+import { getUserProfile, updateUserProfile } from '../../services/authService';
 import type { User } from '../../types';
 import './Profile.css';
 
@@ -10,6 +10,8 @@ export default function Profile() {
   const [user] = useAuthState(auth);
   const [profile, setProfile] = useState<User | null>(null);
   const [displayName, setDisplayName] = useState('');
+  const [weight, setWeight] = useState<number | ''>('');
+  const [height, setHeight] = useState<number | ''>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -28,6 +30,8 @@ export default function Profile() {
       if (userProfile) {
         setProfile(userProfile);
         setDisplayName(userProfile.displayName || '');
+        setWeight(userProfile.weight || '');
+        setHeight(userProfile.height || '');
       }
     } catch (error) {
       console.error('Failed to load profile:', error);
@@ -42,6 +46,11 @@ export default function Profile() {
     setMessage('');
     try {
       await updateFirebaseProfile(user, { displayName: displayName || undefined });
+      await updateUserProfile(user.uid, {
+        displayName: displayName || undefined,
+        weight: weight !== '' ? Number(weight) : undefined,
+        height: height !== '' ? Number(height) : undefined,
+      });
       setMessage('Profile updated successfully!');
       loadProfile();
     } catch (error: any) {
@@ -81,6 +90,48 @@ export default function Profile() {
               placeholder="Enter your name"
             />
           </div>
+
+          <div className="info-item">
+            <label>Weight (kg)</label>
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
+              placeholder="Enter your weight in kg"
+              min="0"
+              step="0.1"
+            />
+          </div>
+
+          <div className="info-item">
+            <label>Height (cm)</label>
+            <input
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(e.target.value === '' ? '' : Number(e.target.value))}
+              placeholder="Enter your height in cm"
+              min="0"
+              step="0.1"
+            />
+          </div>
+
+          {profile && profile.weight && profile.height && (
+            <div className="info-item">
+              <label>BMI (Body Mass Index)</label>
+              <div className="info-value">
+                {((profile.weight / ((profile.height / 100) ** 2))).toFixed(1)}
+                <span style={{ fontSize: '0.9em', color: '#666', marginLeft: '8px' }}>
+                  {(() => {
+                    const bmi = profile.weight / ((profile.height / 100) ** 2);
+                    if (bmi < 18.5) return '(Underweight)';
+                    if (bmi < 25) return '(Normal)';
+                    if (bmi < 30) return '(Overweight)';
+                    return '(Obese)';
+                  })()}
+                </span>
+              </div>
+            </div>
+          )}
 
           {profile && (
             <div className="info-item">

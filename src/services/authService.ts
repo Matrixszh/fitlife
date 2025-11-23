@@ -5,7 +5,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
 import type { User } from '../types';
 
@@ -53,5 +53,13 @@ export const getUserProfile = async (uid: string): Promise<User | null> => {
     } as User;
   }
   return null;
+};
+
+export const updateUserProfile = async (
+  uid: string,
+  updates: Partial<Pick<User, 'displayName' | 'weight' | 'height'>>
+): Promise<void> => {
+  const userRef = doc(db, 'users', uid);
+  await updateDoc(userRef, updates);
 };
 

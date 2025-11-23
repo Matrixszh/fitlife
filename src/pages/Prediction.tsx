@@ -55,7 +55,7 @@ export default function Prediction() {
     <div className="prediction-page">
       <div className="prediction-container">
         <div className="prediction-header">
-          <h1>🤖 Activity Type Predictor</h1>
+          <h1>Workout Predictor</h1>
           <p>Enter workout details to predict the activity type using Machine Learning</p>
         </div>
 
@@ -107,7 +107,7 @@ export default function Prediction() {
               disabled={loading}
               className="btn-primary btn-predict"
             >
-              {loading ? 'Predicting...' : '🤖 Predict Activity Type'}
+              {loading ? 'Predicting...' : 'Predict Activity Type'}
             </button>
             <button onClick={handleClear} className="btn-secondary">
               Clear

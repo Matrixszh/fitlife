@@ -1,5 +1,6 @@
 import type { Workout, ActivityType } from '../../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { format, subDays, startOfDay } from 'date-fns';
 import './Dashboard.css';
 
 interface ActivityChartProps {
@@ -20,14 +21,28 @@ export default function ActivityChart({ workouts }: ActivityChartProps) {
     activityCounts[workout.activityType]++;
   });
 
-  const chartData = Object.entries(activityCounts).map(([name, value]) => ({
-    name,
-    count: value,
-  }));
+  // Generate data for line chart - last 7 days of workout activity
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const date = subDays(new Date(), 6 - i);
+    return {
+      date: format(date, 'MMM dd'),
+      fullDate: startOfDay(date),
+      count: 0,
+    };
+  });
 
-  const pieData = chartData.map((item) => ({
-    name: item.name,
-    value: item.count,
+  // Count workouts per day
+  workouts.forEach((workout) => {
+    const workoutDate = startOfDay(new Date(workout.date));
+    const dayData = last7Days.find((day) => day.fullDate.getTime() === workoutDate.getTime());
+    if (dayData) {
+      dayData.count++;
+    }
+  });
+
+  const pieData = Object.entries(activityCounts).map(([name, value]) => ({
+    name,
+    value,
   }));
 
   return (
@@ -35,21 +50,43 @@ export default function ActivityChart({ workouts }: ActivityChartProps) {
       <h3>Workouts by Activity Type</h3>
       <div className="charts-grid">
         <div className="chart-wrapper">
-          <h4>Bar Chart</h4>
+          <h4>Workout Trend (Last 7 Days)</h4>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
+            <LineChart data={last7Days}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis 
+                dataKey="date" 
+                stroke="#666"
+                style={{ fontSize: '12px' }}
+              />
+              <YAxis 
+                stroke="#666"
+                style={{ fontSize: '12px' }}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#fff', 
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '10px'
+                }}
+              />
               <Legend />
-              <Bar dataKey="count" fill="#667eea" />
-            </BarChart>
+              <Line 
+                type="monotone" 
+                dataKey="count" 
+                stroke="#667eea" 
+                strokeWidth={3}
+                dot={{ fill: '#667eea', r: 5 }}
+                activeDot={{ r: 7 }}
+                name="Workouts"
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
 
         <div className="chart-wrapper">
-          <h4>Pie Chart</h4>
+          <h4>Activity Distribution</h4>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie

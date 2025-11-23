@@ -21,7 +21,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/dashboard" className="navbar-brand">
-          <span className="brand-icon">💪</span>
+          <span className="brand-icon"></span>
           FitLife
         </Link>
 
@@ -34,7 +34,7 @@ export default function Navbar() {
               Workouts
             </Link>
             <Link to="/prediction" className="nav-link">
-              🤖 Predict
+              Predict
             </Link>
             <Link to="/profile" className="nav-link">
               Profile
